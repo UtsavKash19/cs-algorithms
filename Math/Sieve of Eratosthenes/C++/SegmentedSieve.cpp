@@ -51,7 +51,49 @@ void segmentedSieve(ll n){
         high = high + limit;
     }
 }
+
+// Better version of code
+vector<bool> segSieve(int L, int R){
+    // get me prime array, i will use it to ,ark seg sieve
+    vector<bool>sieve=Sieve(sqrt(R));
+    // make base priime to mark sieve
+    vector<int>basePrimes;
+    for (int i = 0; i < sieve.size(); i++)
+    {
+        if(sieve[i]){
+            basePrimes.push_back(i);
+        }
+    }
+    vector<bool>segSieve(R-L+1, true);
+    if(L == 1 || L == 0){
+        segSieve[L] = false;
+    }
+    for(auto prime : basePrimes){
+        int first_multiple = (L / prime) * prime ;
+        if(first_multiple < L){
+            first_multiple += prime;
+        }
+        int j = max(first_multiple, prime*prime);
+        while(j <= R){
+            // segSieve[j] = false;
+            segSieve[j-L] = false;
+            j += prime; 
+        }
+    }
+    return segSieve;
+}
+
 int main()
 {
     segmentedSieve(10000);
+
+    int L = 110;
+    int R = 130;
+    vector<bool>ss = segSieve(L,R);
+    for (int i = 0; i < ss.size(); i++)
+    {
+        if(ss[i]){
+            cout<< i + L <<" ";
+        }
+    }
 }
